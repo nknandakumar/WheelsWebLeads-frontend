@@ -1,0 +1,97 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# Dependency directory
+node_modules/
+
+# Build output
+dist/
+build/
+.out/
+
+# Next.js specific
+.next/
+.vercel/
+
+# Vite specific
+.vite/
+
+# Nuxt specific
+.nuxt/
+.nitro/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables
+.env
+.env.local
+.env.*.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor folders
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Cache
+.cache/
+*.tsbuildinfo
+
+# Misc
+*.tgz
+*.zip
+*.gz
+
+# Coverage reports
+coverage/
+
+# Static export (Next.js)
+out/
+
+# Firebase
+.firebase/
+
+# Storybook
+storybook-static/
+
+# Tailwind JIT cache
+.tailwind/
+
+# Parcel cache
+.cache/
+
+# SvelteKit
+.svelte-kit/
+
+# TypeScript
+*.tsbuildinfo
