@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import LeadForm from './components/LeadForm';
 import LeadList from './components/LeadList';
 import DisbursementForm from './components/DisbursementForm';
 import DisbursementList from './components/DisbursementList';
 import Dashboard from './components/Dashboard';
-
-function App() {
+import Login from './components/Login';
+import { Analytics } from '@vercel/analytics/react';
+function AppLayout() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const isAuthed = typeof window !== 'undefined' && localStorage.getItem('auth') === '1';
+  const handleLogout = () => {
+    localStorage.removeItem('auth');
+    navigate('/login', { replace: true });
+  };
 
   const navigation = [
     { name: 'Dashboard', href: '/' },
@@ -18,9 +25,9 @@ function App() {
   ];
 
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        {/* Navigation Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation Header (hidden on login/not authed) */}
+      {isAuthed && (
         <nav className="bg-blue-600 text-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
@@ -47,7 +54,7 @@ function App() {
                 </button>
               </div>
               {/* Desktop menu */}
-              <div className="hidden sm:flex sm:space-x-4">
+              <div className="hidden sm:flex sm:space-x-4 items-center">
                 {navigation.map((item) => (
                   <Link
                     key={item.href}
@@ -57,6 +64,7 @@ function App() {
                     {item.name}
                   </Link>
                 ))}
+                <button onClick={handleLogout} className="ml-4 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-md text-sm">Logout</button>
               </div>
             </div>
           </div>
@@ -75,14 +83,17 @@ function App() {
                     {item.name}
                   </Link>
                 ))}
+                <button onClick={() => { setIsOpen(false); handleLogout(); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-blue-700">Logout</button>
               </div>
             </div>
           )}
         </nav>
+      )}
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8">
-          <div className="lg:flex lg:space-x-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8">
+        <div className="lg:flex lg:space-x-8">
+          {isAuthed && (
             <div className="lg:w-1/4 hidden lg:block">
               {/* Sidebar navigation for large screens */}
               <nav className="mt-6">
@@ -100,18 +111,33 @@ function App() {
                 </div>
               </nav>
             </div>
-            <div className="lg:w-3/4">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/leads/new" element={<LeadForm />} />
-                <Route path="/leads" element={<LeadList />} />
-                <Route path="/disbursements/new" element={<DisbursementForm />} />
-                <Route path="/disbursements" element={<DisbursementList />} />
-              </Routes>
-            </div>
+          )}
+          <div className="lg:w-3/4">
+            <Routes>
+              {/* Public route */}
+              <Route path="/login" element={<Login onLogin={() => {}} />} />
+
+              {/* Protected routes */}
+              <Route path="/" element={isAuthed ? <Dashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/leads/new" element={isAuthed ? <LeadForm /> : <Navigate to="/login" replace />} />
+              <Route path="/leads" element={isAuthed ? <LeadList /> : <Navigate to="/login" replace />} />
+              <Route path="/disbursements/new" element={isAuthed ? <DisbursementForm /> : <Navigate to="/login" replace />} />
+              <Route path="/disbursements" element={isAuthed ? <DisbursementList /> : <Navigate to="/login" replace />} />
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to={isAuthed ? '/' : '/login'} replace />} />
+            </Routes>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppLayout />
+      <Analytics />
     </Router>
   );
 }
