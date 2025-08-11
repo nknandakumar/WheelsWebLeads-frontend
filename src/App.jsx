@@ -6,7 +6,7 @@ import DisbursementForm from './components/DisbursementForm';
 import DisbursementList from './components/DisbursementList';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
-import { Analytics } from '@vercel/analytics/react';
+
 function AppLayout() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -137,7 +137,6 @@ function App() {
   return (
     <Router>
       <AppLayout />
-      <Analytics />
     </Router>
   );
 }
